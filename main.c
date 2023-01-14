@@ -21,6 +21,7 @@ void main(void)
   message[3] = '\0';
 
   printf("INPUT MESSAGE %s \n", message); 
-  strcpy(encodedMessage,trelice_encode(message, MSG_SIZE)); 
+  strcpy(encodedMessage,trellisEncode(message, MSG_SIZE)); 
+  
   printf("ENCODED MESSAGE  %s \n", encodedMessage); 
 }
