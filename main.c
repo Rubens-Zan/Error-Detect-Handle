@@ -1,16 +1,26 @@
 #include <stdio.h>
+#include <string.h>
 #include "error-handle.h"
 
-#define MSG_SIZE 20
+#define MSG_SIZE 3
 
 void main(void)
 {
-  byte message[MSG_SIZE]; // message of packet bytes
+  bit message[MSG_SIZE]; // message of packet bits
+  bit encodedMessage[MSG_SIZE+MSG_SIZE]; // message of packet bits
+
   unsigned int check;            // 16-bit checksum value
   unsigned int i;                // Loop counter
 
   // Compute the 16-bit checksum
-  check = checksum(message, MSG_SIZE);
+  // check = checksum(message, MSG_SIZE);
+  // message = "110"; 
+  message[0] = '1';
+  message[1] = '1';
+  message[2] = '0';
+  message[3] = '\0';
 
-  printf("checksum test %04X \n", check);
+  printf("INPUT MESSAGE %s \n", message); 
+  strcpy(encodedMessage,trelice_encode(message, MSG_SIZE)); 
+  printf("ENCODED MESSAGE  %s \n", encodedMessage); 
 }
