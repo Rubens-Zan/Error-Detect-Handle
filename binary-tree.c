@@ -1,8 +1,10 @@
 #include "binary-tree.h"
 #include "error-handle.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 
-tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState )
+tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState, unsigned int index )
 {
     tNode *n = (tNode *)malloc(sizeof(tNode));
 
@@ -11,8 +13,10 @@ tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState cur
     n->left = NULL;
     n->right = NULL;
     n->receivedBit = inputBit;
-    getNextState(curState, inputBit, n->curState, n->correctedBits); // get next state according to the trellice diagram
-   
+    n->index = index; 
+    getNextState(curState, inputBit, n); // get next state according to the trellice diagram
+
+    printf("idx: %d %d->%d\n", n->index, curState, n->curState); 
     return n;
 }
 /****/
@@ -24,6 +28,29 @@ unsigned int countNodes(tNode *n)
     }
     else
         return 0;
+}
+
+void beginLeafs(tNode *n, unsigned int curPathError, typesState curState, unsigned int index)
+{
+
+    if (n->left != NULL && n->right != NULL)
+    {   
+        beginLeafs(n->left, n->pathError, n->curState,++index); 
+        beginLeafs(n->right,n->pathError,n->curState,++index);
+    }else {
+        n->left = startNode(curPathError,0,curState,++index);
+        n->right = startNode(curPathError,1,curState,++index);
+    }
+}
+
+void emordem(tNode *no)
+{
+    if (no != NULL)
+    {
+        emordem(no->left);
+        printf("%s  ", no->correctedBits);
+        emordem(no->right);
+    }
 }
 /****/
 unsigned int height(tNode *p)

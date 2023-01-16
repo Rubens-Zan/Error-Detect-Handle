@@ -1,10 +1,14 @@
 #include "error-handle.h"
+#include "binary-tree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// #include <search.h>
+
 
 #define BITTOINT(bitRepresentation)  (bitRepresentation - '0')
 #define INTTOBIT(intBit)  (intBit + '0')
+#define HANNINGDISTANCE(receivedBit,testedBit,packageSize) (return strncmp(receivedBit,testedBit, packageSize))
 
 unsigned int checksum(bit *received,unsigned int nbits){
     unsigned int sum = 0;
@@ -51,7 +55,8 @@ bit * trellisEncode(bit *originalMessage, unsigned int size){
     bit trellis[4] = "000"; 
     trellis[3] = '\0';
 
-    bit *encodedMessage = (bit *) malloc(sizeof(char) * (size+ size)); // since message will be encoded to x1 and x2, it will be double the message
+    bit *encodedMessage = (bit *) malloc(sizeof(char) * (size * 2)); // since message will be encoded to x1 and x2, it will be double the message
+    
     unsigned int encodCounter = 0;
     for (unsigned int i=0;i < size;++i){
         bit x1,x2; 
@@ -83,62 +88,112 @@ bit * trellis_decode(bit *originalMessage, unsigned int size){
  * @param receivedBit{0,1} - Received bit  
  * @param nextState{A,B,C,D} - Next state of the path
  */
-void getNextState(typesState curState,unsigned int receivedBit,typesState nextState, bit *correctedReceivedBits){
+void getNextState(typesState curState,unsigned int receivedBit,tNode *nextNode){
     // CHECK WHAT IS THE CURRENT STATES
+    // printf("anterior: %d receiv: %d ",curState, receivedBit); 
     
     if (curState == A){
         if (receivedBit == 0){
-            nextState = A;
-            correctedReceivedBits = "00"; 
-            
+            nextNode->curState = A;
+            strcpy(nextNode->correctedBits, "00\0");
+            // printf("A -> A corrigido %s \n", nextNode->correctedBits);
         }else {
-            nextState = C;
-            correctedReceivedBits = "11"; 
+            nextNode->curState = C;
+            strcpy(nextNode->correctedBits, "11\0");
+            // printf("A -> C corrigido %s \n", nextNode->correctedBits);
         }
     }
     if (curState == B){
         if (receivedBit == 0){
-            nextState = A;
-            correctedReceivedBits = "11"; 
+            nextNode->curState = A;
+            strcpy(nextNode->correctedBits, "11\0");
+            // printf("B -> A corrigido %s \n", nextNode->correctedBits);
         } else {
-            nextState = C;
-            correctedReceivedBits = "00"; 
+            nextNode->curState = C;
+            strcpy(nextNode->correctedBits, "00\0");
+            // printf("B -> C corrigido %s \n", nextNode->correctedBits);
         }
     }
     if (curState == C){
          if (receivedBit == 0){
-            nextState = B;
-            correctedReceivedBits = "10"; 
+            nextNode->curState = B;
+            strcpy(nextNode->correctedBits, "10\0");
+            // printf("C -> B corrigido %s \n", nextNode->correctedBits);
+
         }else {
-            nextState = D;
-            correctedReceivedBits = "01"; 
+            nextNode->curState = D;
+            strcpy(nextNode->correctedBits, "01\0");
+            // printf("C -> D corrigido %s \n", nextNode->correctedBits);
         }
     }
     if (curState == D){
         if (receivedBit == 0){
-            nextState = B;
-            correctedReceivedBits = "01"; 
+            nextNode->curState = B;
+            strcpy(nextNode->correctedBits, "01\0");
+            // printf("D -> B corrigido %s \n", nextNode->correctedBits);
         }else {
-            nextState = D;
-            correctedReceivedBits = "10"; 
+            nextNode->curState = D;
+            strcpy(nextNode->correctedBits, "10\0");
+            // printf("D -> D corrigido %s \n", nextNode->correctedBits);
         }
     }
 
 }
 
+unsigned int calcHanningDistance(bit *receivedPacketMessage, bit *correctedPacketMessage, unsigned int packageSize){
+    unsigned int hanningDist = 0;
+    for (unsigned int i = 0;i < packageSize;++i)
+        if (receivedPacketMessage[i] != correctedPacketMessage[i])
+            ++hanningDist; 
+    // printf("receivedPacketMessage: %c correctedPacketMessage: %c\n",receivedPacketMessage[0],correctedPacketMessage[0]);
+    return (hanningDist); 
+}
+
 
 /** VITERBI ALGORITHM **/
 
-bit * viterbiAlgotithm(bit *receivedMessage, unsigned int packetSize){
+void updatePathError(tNode *node, bit *receivedStepMessage, unsigned int packetSize){
+     
+    if (node->left != NULL && node->right != NULL)
+    {   
+        updatePathError(node->left,receivedStepMessage,packetSize); 
+        updatePathError(node->right,receivedStepMessage,packetSize);
+    }else {
+        char receivedStepMessage[packetSize+1];
+        // strncpy(receivedStepMessage, &receivedMessage[curStep * packetSize], packetSize);
+        node->pathError += calcHanningDistance(receivedStepMessage,node->correctedBits, packetSize);
+
+        // printf("pathError : %d \n",node->pathError); 
+    }
+
+}
+
+
+bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
     /**
      1. PACKETS OF n BITS, WRITE PACKETS OVER EACH TIME STEP OF TRELLIS IN SEQUENCE
      2.FIND THE HAMMING DISTANCE BETWEEN: 
         a) the n bit packet of the received code and the
         b) output of the encoder shown on the traces
         Add the Hamming Distance + Path distance earlier
-     3. Discard the path with higer path metric
+     3. Discard the path with higher path metric
      4. Repeat step 2 and 3 
      5. Select the Path with lowest Path metric and decode
     */
+    tNode *pathRoot = startNode(0, 0, A, 0);
+    pathRoot->correctedBits[0] =  '0';
+    pathRoot->correctedBits[1] = '0';
+    unsigned int curPacket = 0;
+
+    unsigned int totalPackages = strlen(receivedMessage) / packetSize; 
+    for(unsigned int i = 0; i < totalPackages;++i){
+        char receivedStepMessage[packetSize+1];
+        strncpy(receivedStepMessage, &receivedMessage[i * packetSize], packetSize);
+        // receivedMessage[2] = '\0'; 
+        beginLeafs(pathRoot, 0, A, 0);
+        updatePathError(pathRoot, receivedStepMessage, packetSize); 
+        // printf("NODOS : %d\n", countNodes(pathRoot)); 
+        // printf("PACKET %s\n", receivedStepMessage); 
+    }
 
 }

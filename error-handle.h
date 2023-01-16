@@ -1,11 +1,10 @@
-typedef unsigned char bit;    
+#include "structs.h"
 
-typedef enum {
-    A = 00,
-    B = 01,
-    C = 10,
-    D = 11
-} typesState;
+#ifndef _ERROR_H_
+#define _ERROR_H_
 
 bit * trellisEncode(bit *originalMessage, unsigned int size); 
-void getNextState(typesState curState,unsigned int receivedBit,typesState nextState, bit *correctedReceivedBits);
+bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize);
+void getNextState(typesState curState,unsigned int receivedBit,tNode *nextNode); 
+
+#endif

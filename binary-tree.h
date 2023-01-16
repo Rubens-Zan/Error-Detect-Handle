@@ -1,17 +1,11 @@
-#include "error-handle.h"
-#include <stdbool.h>
+#include "structs.h"
 
-typedef struct tNode tNode;
-struct tNode
-{
-    bit receivedBit;     // {1,0}
-    bit correctedBits[3];  // "XY"
-    typesState curState; // {A,B,C,D}
-    tNode *left, *right; // Next path, being left if input is 0 and right 1
-    bool shouldContinue; // determine if this path should be continued or not
-    unsigned int pathError;
-};
+#ifndef _BINARYTREE_H_
+#define _BINARYTREE_H_
 
 unsigned int countNodes(tNode *n);
-tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState );
+tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState, unsigned int index );
 unsigned int height(tNode *p); 
+void beginLeafs(tNode *n, unsigned int curPathError, typesState curState, unsigned int index);
+
+#endif
