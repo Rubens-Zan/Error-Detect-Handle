@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 #include "error-handle.h"
+#include "binary-tree.h"
 
-#define MSG_SIZE 6
+
+#define MSG_SIZE 3
+#define PKT_SIZE 2
+
 
 void main(void)
 {
   // bit message[MSG_SIZE]; // message of packet bits
-  bit message[] = "110110\0"; 
+  bit message[] = "110"; 
 
   bit encodedMessage[MSG_SIZE+MSG_SIZE]; // message of packet bits
 
@@ -25,5 +29,6 @@ void main(void)
   printf("INPUT MESSAGE %s \n", message); 
   strcpy(encodedMessage,trellisEncode(message, MSG_SIZE)); 
   printf("ENCODED MESSAGE  %s \n", encodedMessage); 
-  viterbiAlgorithm(encodedMessage, 2);
+
+  viterbiAlgorithm(encodedMessage, PKT_SIZE);
 }

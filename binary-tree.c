@@ -16,7 +16,6 @@ tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState cur
     n->index = index; 
     getNextState(curState, inputBit, n); // get next state according to the trellice diagram
 
-    printf("idx: %d %d->%d\n", n->index, curState, n->curState); 
     return n;
 }
 /****/
@@ -52,6 +51,64 @@ void emordem(tNode *no)
         emordem(no->right);
     }
 }
+
+
+/* Function to print level order traversal a tree*/
+void printLevelOrder(tNode* root)
+{
+    int h = height(root);
+    printf("\n");
+    int i;
+    for (i = 0; i <= h; i++){
+        printCurrentLevel(root, i);
+        printf("\n");
+    }
+}
+
+void getNextStep(tNode* root)
+{
+    int h = height(root);
+    int i;
+    getNextLeafOnLevel(root, h);
+
+}
+
+void getNextLeafOnLevel(tNode* root, int level)
+{
+    if (root == NULL)
+        return;
+    if (level == 0 && root->left == NULL && root->right == NULL){
+        root->left =  startNode(root->pathError, 0, root->curState, level); 
+        root->right = startNode(root->pathError, 1, root->curState, level); 
+    }
+    else if (level > 0) {
+        getNextLeafOnLevel(root->left, level - 1);
+        getNextLeafOnLevel(root->right, level - 1);
+    }
+}
+
+
+/* Print nodes at a current level */
+void printCurrentLevel(tNode* root, int level)
+{
+    if (root == NULL)
+        return;
+    if (level == 0 ){
+        if (root->curState == A)
+            printf("A"); 
+        if (root->curState == B)
+            printf("B"); 
+        if (root->curState == C)
+            printf("C"); 
+        if (root->curState == D)
+            printf("D"); 
+    }
+    else if (level > 0) {
+        printCurrentLevel(root->left, level - 1);
+        printCurrentLevel(root->right, level - 1);
+    }
+}
+
 /****/
 unsigned int height(tNode *p)
 {
