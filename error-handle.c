@@ -145,7 +145,6 @@ unsigned int calcHanningDistance(bit *receivedPacketMessage, bit *correctedPacke
     for (unsigned int i = 0;i < packageSize;++i)
         if (receivedPacketMessage[i] != correctedPacketMessage[i])
             ++hanningDist; 
-    // printf("receivedPacketMessage: %c correctedPacketMessage: %c\n",receivedPacketMessage[0],correctedPacketMessage[0]);
     return (hanningDist); 
 }
 
@@ -159,11 +158,7 @@ void updatePathError(tNode *node, bit *receivedStepMessage, unsigned int packetS
         updatePathError(node->left,receivedStepMessage,packetSize); 
         updatePathError(node->right,receivedStepMessage,packetSize);
     }else {
-        char receivedStepMessage[packetSize+1];
-        // strncpy(receivedStepMessage, &receivedMessage[curStep * packetSize], packetSize);
         node->pathError += calcHanningDistance(receivedStepMessage,node->correctedBits, packetSize);
-
-        // printf("pathError : %d \n",node->pathError); 
     }
 
 }
@@ -189,12 +184,8 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
     for(unsigned int i = 0; i < totalPackages;++i){
         char receivedStepMessage[packetSize+1];
         strncpy(receivedStepMessage, &receivedMessage[i * packetSize], packetSize);
-        // receivedMessage[2] = '\0'; 
-        // beginLeafs(pathRoot, 0, A, 0);
         getNextStep(pathRoot); 
         updatePathError(pathRoot, receivedStepMessage, packetSize); 
-        // printf("NODOS : %d\n", countNodes(pathRoot)); 
-        // printf("PACKET %s\n", receivedStepMessage); 
     }
     printLevelOrder(pathRoot);
 }

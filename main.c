@@ -29,6 +29,12 @@ void main(void)
   printf("INPUT MESSAGE %s \n", message); 
   strcpy(encodedMessage,trellisEncode(message, MSG_SIZE)); 
   printf("ENCODED MESSAGE  %s \n", encodedMessage); 
-
+  
+  // WITHOUT ERROR
   viterbiAlgorithm(encodedMessage, PKT_SIZE);
+  
+  // FLIPPING THE FIRST BIT
+  encodedMessage[0] = '0'; 
+  viterbiAlgorithm(encodedMessage, PKT_SIZE);
+
 }

@@ -102,6 +102,7 @@ void printCurrentLevel(tNode* root, int level)
             printf("C"); 
         if (root->curState == D)
             printf("D"); 
+        printf("(%s)  |%d|  ", root->correctedBits, root->pathError);
     }
     else if (level > 0) {
         printCurrentLevel(root->left, level - 1);
