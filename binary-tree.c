@@ -29,19 +29,6 @@ unsigned int countNodes(tNode *n)
         return 0;
 }
 
-void beginLeafs(tNode *n, unsigned int curPathError, typesState curState, unsigned int index)
-{
-
-    if (n->left != NULL && n->right != NULL)
-    {   
-        beginLeafs(n->left, n->pathError, n->curState,++index); 
-        beginLeafs(n->right,n->pathError,n->curState,++index);
-    }else {
-        n->left = startNode(curPathError,0,curState,++index);
-        n->right = startNode(curPathError,1,curState,++index);
-    }
-}
-
 void emordem(tNode *no)
 {
     if (no != NULL)
@@ -51,7 +38,6 @@ void emordem(tNode *no)
         emordem(no->right);
     }
 }
-
 
 /* Function to print level order traversal a tree*/
 void printLevelOrder(tNode* root)

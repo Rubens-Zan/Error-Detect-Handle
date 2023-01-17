@@ -24,4 +24,12 @@ struct tNode
     unsigned int index; 
 };
 
+typedef struct combinationAux combinationAux;
+struct combinationAux
+{
+    bit *pathBits;  // "XY"
+    unsigned int pathError;
+    unsigned int index; 
+};
+
 #endif

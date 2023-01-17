@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 // #include <search.h>
 
 
@@ -187,5 +188,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
         getNextStep(pathRoot); 
         updatePathError(pathRoot, receivedStepMessage, packetSize); 
     }
+    unsigned int possibleCombinationsCount = pow(2,height(pathRoot));
+    // generateCombinationsPaths(); 
     printLevelOrder(pathRoot);
 }
