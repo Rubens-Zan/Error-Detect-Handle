@@ -176,7 +176,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
      4. Repeat step 2 and 3 
      5. Select the Path with lowest Path metric and decode
     */
-    tNode *pathRoot = startNode(0, 0, A, 0);
+    tNode *pathRoot = startNode(0, 0, A, 0, "00", packetSize);
     pathRoot->correctedBits[0] =  '0';
     pathRoot->correctedBits[1] = '0';
     unsigned int curPacket = 0;
@@ -185,7 +185,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
     for(unsigned int i = 0; i < totalPackages;++i){
         char receivedStepMessage[packetSize+1];
         strncpy(receivedStepMessage, &receivedMessage[i * packetSize], packetSize);
-        getNextStep(pathRoot); 
+        getNextStep(pathRoot, packetSize); 
         updatePathError(pathRoot, receivedStepMessage, packetSize); 
     }
     unsigned int possibleCombinationsCount = pow(2,height(pathRoot));

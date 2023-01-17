@@ -3,19 +3,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
-tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState, unsigned int index )
+
+tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState, unsigned int level,bit *pathMessage, unsigned int packetSize)
 {
     tNode *n = (tNode *)malloc(sizeof(tNode));
+
 
     n->shouldContinue = true;
     n->pathError = curPathError; 
     n->left = NULL;
     n->right = NULL;
     n->receivedBit = inputBit;
-    n->index = index; 
+    n->pathAggMessage[(level * packetSize)+ packetSize]; 
+    // printf("size :: %d", (level * packetSize)+ packetSize); 
     getNextState(curState, inputBit, n); // get next state according to the trellice diagram
 
+    // strcpy(n->pathAggMessage, pathMessage);
+    // strncpy(n->correctedBits, &n->pathAggMessage[level*packetSize], packetSize); 
     return n;
 }
 /****/
@@ -51,25 +57,25 @@ void printLevelOrder(tNode* root)
     }
 }
 
-void getNextStep(tNode* root)
+void getNextStep(tNode* root, unsigned int packetSize)
 {
     int h = height(root);
     int i;
-    getNextLeafOnLevel(root, h);
+    getNextLeafOnLevel(root, h, packetSize, h);
 
 }
 
-void getNextLeafOnLevel(tNode* root, int level)
+void getNextLeafOnLevel(tNode* root, int level,unsigned int packetSize, unsigned int height)
 {
     if (root == NULL)
         return;
     if (level == 0 && root->left == NULL && root->right == NULL){
-        root->left =  startNode(root->pathError, 0, root->curState, level); 
-        root->right = startNode(root->pathError, 1, root->curState, level); 
+        root->left =  startNode(root->pathError, 0, root->curState, height, root->pathAggMessage,packetSize); 
+        root->right = startNode(root->pathError, 1, root->curState, height, root->pathAggMessage,packetSize); 
     }
     else if (level > 0) {
-        getNextLeafOnLevel(root->left, level - 1);
-        getNextLeafOnLevel(root->right, level - 1);
+        getNextLeafOnLevel(root->left, level - 1,packetSize,height);
+        getNextLeafOnLevel(root->right, level - 1,packetSize,height);
     }
 }
 
@@ -80,6 +86,15 @@ void printCurrentLevel(tNode* root, int level)
     if (root == NULL)
         return;
     if (level == 0 ){
+        // if (root->parent->curState == A)
+        //     printf("A->"); 
+        // if (root->parent->curState == B)
+        //     printf("B->"); 
+        // if (root->parent->curState == C)
+        //     printf("C->"); 
+        // if (root->parent->curState == D)
+        //     printf("D->"); 
+
         if (root->curState == A)
             printf("A"); 
         if (root->curState == B)
@@ -88,6 +103,7 @@ void printCurrentLevel(tNode* root, int level)
             printf("C"); 
         if (root->curState == D)
             printf("D"); 
+        
         printf("(%s)  |%d|  ", root->correctedBits, root->pathError);
     }
     else if (level > 0) {

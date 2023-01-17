@@ -17,6 +17,7 @@ struct tNode
 {
     bit receivedBit;     // {1,0}
     bit correctedBits[3];  // "XY"
+    bit *pathAggMessage;         // Get the path full message from this node level    
     typesState curState; // {A,B,C,D}
     tNode *left, *right; // Next path, being left if input is 0 and right 1
     bool shouldContinue; // determine if this path should be continued or not
