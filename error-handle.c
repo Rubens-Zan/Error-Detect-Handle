@@ -1,10 +1,10 @@
 #include "error-handle.h"
 #include "binary-tree.h"
+#include "stack.h" 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-// #include <search.h>
 
 
 #define BITTOINT(bitRepresentation)  (bitRepresentation - '0')
@@ -164,6 +164,11 @@ void updatePathError(tNode *node, bit *receivedStepMessage, unsigned int packetS
 
 }
 
+tNode * getMinHanningDistancePathLeaf(tNode *root, unsigned int packetSize){
+    tNode *minHanningDistancePathNode = NULL;
+    getListLeafsHannigPathDistance(root, height(root), packetSize,height(root),&minHanningDistancePathNode);
+    return minHanningDistancePathNode; 
+} 
 
 bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
     /**
@@ -176,7 +181,8 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
      4. Repeat step 2 and 3 
      5. Select the Path with lowest Path metric and decode
     */
-    tNode *pathRoot = startNode(0, 0, A, 0, "00", packetSize);
+    tNode *pathRoot = startNode(0, 0, A, 0, packetSize, NULL);
+    tNode *minHanningDistancePathAux;
     pathRoot->correctedBits[0] =  '0';
     pathRoot->correctedBits[1] = '0';
     unsigned int curPacket = 0;
@@ -189,6 +195,12 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
         updatePathError(pathRoot, receivedStepMessage, packetSize); 
     }
     unsigned int possibleCombinationsCount = pow(2,height(pathRoot));
-    // generateCombinationsPaths(); 
+
     printLevelOrder(pathRoot);
+
+    minHanningDistancePathAux = getMinHanningDistancePathLeaf(pathRoot, packetSize); 
+    printf("MIN PATH ERROR: %d",minHanningDistancePathAux->pathError);
+
 }
+
+// 
