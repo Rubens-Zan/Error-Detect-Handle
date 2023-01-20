@@ -1,4 +1,5 @@
 #include "binary-tree.h"
+#include "generate-message.h"
 
 #ifndef _LIST_H_
 #define _LIST_H_

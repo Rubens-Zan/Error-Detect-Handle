@@ -1,5 +1,6 @@
 #include "error-handle.h"
 #include "binary-tree.h"
+#include "generate-message.h"
 #include "list.h" 
 #include <stdio.h>
 #include <stdlib.h>

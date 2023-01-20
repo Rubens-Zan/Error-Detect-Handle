@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "error-handle.h"
 #include "binary-tree.h"
+#include "generate-message.h"
+
 
 
 #define MSG_SIZE 3

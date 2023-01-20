@@ -1,6 +1,6 @@
-#include "structs.h"
 #include "list.h"
 #include "error-handle.h"
+#include "generate-message.h"
 #include <stdlib.h>
 #include <stdio.h>
 

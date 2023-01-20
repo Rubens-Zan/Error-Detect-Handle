@@ -1,7 +1,9 @@
-#include "structs.h"
-
+#include <stdbool.h> 
 #ifndef _BINARYTREE_H_
 #define _BINARYTREE_H_
+
+#include "generate-message.h"
+
 typedef struct tNode tNode;
 struct tNode
 {
@@ -24,4 +26,5 @@ void getNextStep(tNode* root, unsigned int packetSize);
 void getNextLeafOnLevel(tNode* root, int level,unsigned int packetSize, unsigned int height);
 void getListLeafsHannigPathDistance(tNode* root, int level,unsigned int packetSize, unsigned int height, tNode** minHanningDistPathNode); 
 void getFullMessageDecoded(tNode* leaf); 
+
 #endif
