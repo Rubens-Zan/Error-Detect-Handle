@@ -1,15 +1,9 @@
 #include "error-handle.h"
 #include "binary-tree.h"
-#include "stack.h" 
+#include "list.h" 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-
-
-#define BITTOINT(bitRepresentation)  (bitRepresentation - '0')
-#define INTTOBIT(intBit)  (intBit + '0')
-#define HANNINGDISTANCE(receivedBit,testedBit,packageSize) (return strncmp(receivedBit,testedBit, packageSize))
 
 unsigned int checksum(bit *received,unsigned int nbits){
     unsigned int sum = 0;
@@ -69,10 +63,6 @@ bit * trellisEncode(bit *originalMessage, unsigned int size){
     encodedMessage[encodCounter] = '\0';
 
     return encodedMessage; 
-}
-
-bit * trellis_decode(bit *originalMessage, unsigned int size){
-
 }
 
 /****/
@@ -170,17 +160,7 @@ tNode * getMinHanningDistancePathLeaf(tNode *root, unsigned int packetSize){
     return minHanningDistancePathNode; 
 } 
 
-bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
-    /**
-     1. PACKETS OF n BITS, WRITE PACKETS OVER EACH TIME STEP OF TRELLIS IN SEQUENCE
-     2.FIND THE HAMMING DISTANCE BETWEEN: 
-        a) the n bit packet of the received code and the
-        b) output of the encoder shown on the traces
-        Add the Hamming Distance + Path distance earlier
-     3. Discard the path with higher path metric
-     4. Repeat step 2 and 3 
-     5. Select the Path with lowest Path metric and decode
-    */
+bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned int msgSize){
     tNode *pathRoot = startNode(0, 0, A, 0, packetSize, NULL);
     tNode *minHanningDistancePathAux;
     pathRoot->correctedBits[0] =  '0';
@@ -194,13 +174,18 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize){
         getNextStep(pathRoot, packetSize); 
         updatePathError(pathRoot, receivedStepMessage, packetSize); 
     }
-    unsigned int possibleCombinationsCount = pow(2,height(pathRoot));
-
     printLevelOrder(pathRoot);
 
     minHanningDistancePathAux = getMinHanningDistancePathLeaf(pathRoot, packetSize); 
-    printf("MIN PATH ERROR: %d",minHanningDistancePathAux->pathError);
+    tListNode *head = NULL;
+    
+    while( minHanningDistancePathAux->parent){
+        insertfirst(minHanningDistancePathAux,&head);
+        minHanningDistancePathAux = minHanningDistancePathAux->parent; 
+    } 
 
+    bit *decodedMessage = getDecodedMessage(head,msgSize);
+    prnList(head);
+
+    return decodedMessage; 
 }
-
-// 
