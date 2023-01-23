@@ -10,9 +10,7 @@
 
 
 
-bit * trellisEncode(bit *originalMessage, unsigned int size); 
 bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned int msgSize);
 void getNextState(typesState curState,unsigned int receivedBit,tNode *nextNode); 
-tNode * getMinHanningDistance(tNode *root, unsigned int packetSize);
 
 #endif

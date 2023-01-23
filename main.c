@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "generate-message.h"
 #include "error-handle.h"
 #include "binary-tree.h"
 #include "generate-message.h"
@@ -13,30 +14,30 @@
 
 void main(void)
 {
-  // bit message[MSG_SIZE]; // message of packet bits
   bit message[] = "110"; 
   unsigned int check;            // 16-bit checksum value
   unsigned int i;                // Loop counter
 
-  // check = checksum(message, MSG_SIZE);
-
   printf("INPUT MESSAGE %s \n", message); 
-  bit *encodedMessage = trellisEncode(message, MSG_SIZE);
-
-  printf("ENCODED MESSAGE  %s \n", encodedMessage); 
+  msgT *encodedMessage = initMessage(message, MSG_SIZE);
+  printf("ENCODED MESSAGE  %s \n", encodedMessage->dados); 
   
   // WITHOUT ERROR
-  printf("\nRECEIVED MESSAGE %s", encodedMessage);
-  bit * decodedMessageTest = viterbiAlgorithm(encodedMessage, PKT_SIZE,MSG_SIZE);
+  printf("\nRECEIVED MESSAGE %s", encodedMessage->dados);
+  bit * decodedMessageTest = viterbiAlgorithm(encodedMessage->dados, PKT_SIZE,MSG_SIZE);
   printf("Mensagem decodificada %s \n",decodedMessageTest);
   // FLIPPING THE FIRST BIT
-  encodedMessage[0] = '0'; 
+  encodedMessage->dados[0] = '0'; 
 
-  printf("\nRECEIVED MESSAGE %s", encodedMessage);
-  bit * decodedMessageTestError = viterbiAlgorithm(encodedMessage, PKT_SIZE,MSG_SIZE);
-  printf("Mensagem decodificada %s \n",decodedMessageTestError);
+  printf("\nRECEIVED MESSAGE %s", encodedMessage->dados);
+  bit * decodedMessageTestError; 
+  if (calculaParidade(encodedMessage->dados, MSG_SIZE) != encodedMessage->paridade){
+    decodedMessageTestError = viterbiAlgorithm(encodedMessage->dados, PKT_SIZE,MSG_SIZE);
+    printf("Mensagem decodificada %s \n",decodedMessageTestError);
 
+  }
+  
+  free(encodedMessage); 
   free(decodedMessageTest);
   free(decodedMessageTestError);
-
 }

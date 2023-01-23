@@ -6,68 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-unsigned int checksum(bit *received,unsigned int nbits){
-    unsigned int sum = 0;
-
-    // Main summing loop
-    while(nbits > 1)
-    {
-        // sum += (unsigned short) received++;
-        nbits -= 2;
-    }
-
-    // Add left-over bit, if any
-    if (nbits > 0)
-        sum += *((bit *) received);
-
-    // Fold 32-bit sum to 16 bits
-    while (sum>>16)
-        sum = (sum & 0xFFFF) + (sum >> 16);
-
-    return(~sum);
-}
-
-/** TRELLIS ENCODING **/
-
-void trellisShift(bit *trellis, bit newBit){
-    trellis[2] = trellis[1]; 
-    trellis[1] = trellis[0]; 
-    trellis[0] = newBit; 
-}
-
-bit encodedX1(bit *trellis){
-    bit x1; 
-    x1 = INTTOBIT(( BITTOINT(trellis[0]) +BITTOINT(trellis[1]) +BITTOINT(trellis[2])) % 2);  // x1 = m xor m1 xor m2 
-    return x1; 
-}
-
-bit encodedX2(bit *trellis){
-    bit x2; 
-    x2 = INTTOBIT((BITTOINT(trellis[0]) + BITTOINT(trellis[2]) ) % 2);  // x2 = m xor m2 
-    return x2; 
-}
-
-bit * trellisEncode(bit *originalMessage, unsigned int size){
-    bit trellis[4] = "000"; 
-    trellis[3] = '\0';
-
-    bit *encodedMessage = (bit *) malloc(sizeof(char) * (size * 2)); // since message will be encoded to x1 and x2, it will be double the message
-    
-    unsigned int encodCounter = 0;
-    for (unsigned int i=0;i < size;++i){
-        bit x1,x2; 
-        trellisShift(trellis, originalMessage[i]);
-        encodedMessage[encodCounter] = encodedX1(trellis); 
-        encodedMessage[encodCounter+1]= encodedX2(trellis);
-        encodCounter+=2; 
-    }
-    encodedMessage[encodCounter] = '\0';
-
-    return encodedMessage; 
-}
-
-/****/
-
 /**
  * @brief Get the next state object
  * PATH DIAGRAM ACCORDING IF RECEIVED 0 OR 1
