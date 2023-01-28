@@ -143,7 +143,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
         deleteList(&auxList);
     }
   
-    #ifndef DEBUG
+    #ifdef DEBUG
     printLevelOrder(pathRoot);
     #endif
     minHanningDistancePathAux = getMinHanningDistancePathLeaf(pathRoot, packetSize); 
@@ -157,7 +157,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
     printf("\n\n");
 
     bit *decodedMessage = getDecodedMessage(head,msgSize);
-    #ifndef DEBUG 
+    #ifdef DEBUG 
     prnList(head);
     #endif
     return decodedMessage; 
