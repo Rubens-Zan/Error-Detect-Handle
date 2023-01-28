@@ -8,9 +8,9 @@ CFLAGS = -Wall -g
 MODULOS = binary-tree \
 	error-handle \
 	list \
-	generate-message
+	generate-message 
 
-OBJETOS = main.o $(addsuffix .o,$(MODULOS)) 
+OBJETOS = teste.o $(addsuffix .o,$(MODULOS)) 
 
 .PHONY : all clean
 

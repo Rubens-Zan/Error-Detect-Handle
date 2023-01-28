@@ -128,7 +128,6 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
     tNode *minHanningDistancePathAux;
     pathRoot->correctedBits[0] =  '0';
     pathRoot->correctedBits[1] = '0';
-    unsigned int curPacket = 0;
 
     unsigned int totalPackages = msgSize / packetSize; 
     tListNode *auxList = NULL;

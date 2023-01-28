@@ -30,7 +30,6 @@ bit * trellisEncode(bit *originalMessage, unsigned int size){
     
     unsigned int encodCounter = 0;
     for (unsigned int i=0;i < size;++i){
-        bit x1,x2; 
         trellisShift(trellis, originalMessage[i]);
         encodedMessage[encodCounter] = encodedX1(trellis); 
         encodedMessage[encodCounter+1]= encodedX2(trellis);

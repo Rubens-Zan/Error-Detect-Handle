@@ -8,8 +8,6 @@
 void insertfirst(tNode *element, tListNode **head)
 {
     tListNode *New;
-
-    tNode *elementAux = element;
     New = (tListNode *)malloc(sizeof(tListNode));
     New->value = element;
     New->next = (*head);

@@ -15,8 +15,6 @@
 void main(void)
 {
   bit message[] = "1101111010"; 
-  unsigned int check;            // 16-bit checksum value
-  unsigned int i;                // Loop counter
 
   printf("INPUT MESSAGE %s \n", message); 
   msgT *encodedMessage = initMessage(message, MSG_SIZE);
