@@ -64,7 +64,6 @@ void printLevelOrder(tNode* root)
 void getNextStep(tNode* root, unsigned int packetSize)
 {
     int h = height(root);
-    int i;
     getNextLeafOnLevel(root, h, packetSize, h);
 }
 

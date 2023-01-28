@@ -133,7 +133,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
     tListNode *auxList = NULL;
 
     for(unsigned int i = 0; i < totalPackages;++i){
-        char receivedStepMessage[packetSize+1];
+        bit receivedStepMessage[packetSize+1];
         strncpy(receivedStepMessage, &receivedMessage[i * packetSize], packetSize);
         getNextStep(pathRoot, packetSize); 
         updatePathError(pathRoot,height(pathRoot),&auxList,height(pathRoot),receivedStepMessage,packetSize); 
@@ -144,7 +144,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
     }
   
     #ifndef DEBUG
-    // printLevelOrder(pathRoot);
+    printLevelOrder(pathRoot);
     #endif
     minHanningDistancePathAux = getMinHanningDistancePathLeaf(pathRoot, packetSize); 
     tListNode *head = NULL;
@@ -158,7 +158,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
 
     bit *decodedMessage = getDecodedMessage(head,msgSize);
     #ifndef DEBUG 
-    // prnList(head);
+    prnList(head);
     #endif
     return decodedMessage; 
 }

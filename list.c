@@ -35,7 +35,7 @@ void deleteList(tListNode **head_ref)
 
 bit *getDecodedMessage(tListNode *head, unsigned int decodedMsgSize)
 {
-    bit *decodedMsg = (bit *)malloc(sizeof(char) * (decodedMsgSize + 1)); // since message will be encoded to x1 and x2, it will be double the message
+    bit *decodedMsg = (bit *)malloc(sizeof(bit) * (decodedMsgSize + 1)); // since message will be encoded to x1 and x2, it will be double the message
 
     tListNode *aux = head;
     unsigned int i = 0;

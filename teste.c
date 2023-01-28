@@ -12,7 +12,7 @@
 #define PKT_SIZE 2
 
 
-void main(void)
+int main(void)
 {
   bit message[] = "1101111010"; 
 
@@ -38,4 +38,6 @@ void main(void)
   free(encodedMessage); 
   free(decodedMessageTest);
   free(decodedMessageTestError);
+
+  return 0;
 }

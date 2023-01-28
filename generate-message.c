@@ -26,7 +26,7 @@ bit * trellisEncode(bit *originalMessage, unsigned int size){
     bit trellis[4] = "000"; 
     trellis[3] = '\0';
 
-    bit *encodedMessage = (bit *) malloc(sizeof(char) * (size * 2)); // since message will be encoded to x1 and x2, it will be double the message
+    bit *encodedMessage = (bit *) malloc(sizeof(bit) * (size * 2)); // since message will be encoded to x1 and x2, it will be double the message
     
     unsigned int encodCounter = 0;
     for (unsigned int i=0;i < size;++i){
@@ -42,7 +42,7 @@ bit * trellisEncode(bit *originalMessage, unsigned int size){
 
 bit calculaParidade(bit *conteudo,unsigned int tam){
    // Faz um XOR dos bits para cada byte da mensagem.
-    unsigned char aux = conteudo[0];
+    bit aux = conteudo[0];
     for (int i = 1; i < tam; i++){
         aux = aux ^ conteudo[i];
 	}

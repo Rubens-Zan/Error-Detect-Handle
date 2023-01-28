@@ -3,7 +3,7 @@
 # Para remover os arquivos temporários digite make clean
 # Para remover os arquivos temporários e o arquivo executável digite make purge
 
-CFLAGS = -Wall -g
+CFLAGS = -g
 
 MODULOS = binary-tree \
 	error-handle \
