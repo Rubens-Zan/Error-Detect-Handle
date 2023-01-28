@@ -13,15 +13,15 @@ MODULOS = binary-tree \
 OBJETOS = teste.o $(addsuffix .o,$(MODULOS)) 
 
 
-debug: CFLAGS += -DDEBUG
-debug: teste
 
-.PHONY : all clean
+.PHONY : all clean debug
+
+
+debug : CFLAGS += -DDEBUG
+debug : teste
 
 all : teste
-
 teste : $(OBJETOS)
-
 clean : 
 	$(RM) $(OBJETOS)
 

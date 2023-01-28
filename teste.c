@@ -7,10 +7,8 @@
 #include "generate-message.h"
 
 
-
 #define MSG_SIZE 10
 #define PKT_SIZE 2
-
 
 int main(void)
 {
@@ -26,13 +24,13 @@ int main(void)
   printf("\n Mensagem decodificada %s \n",decodedMessageTest);
   // FLIPPING THE FIRST BIT
   encodedMessage->dados[0] = '0'; 
+  encodedMessage->dados[3] = '1'; 
 
   printf("\nRECEIVED MESSAGE %s", encodedMessage->dados);
   bit * decodedMessageTestError; 
   if (calculaParidade(encodedMessage->dados, MSG_SIZE) != encodedMessage->paridade){
     decodedMessageTestError = viterbiAlgorithm(encodedMessage->dados, PKT_SIZE,MSG_SIZE*2);
     printf("Mensagem decodificada %s \n",decodedMessageTestError);
-
   }
   
   free(encodedMessage); 
