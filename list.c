@@ -48,6 +48,7 @@ bit *getDecodedMessage(tListNode *head, unsigned int decodedMsgSize)
         aux = aux->next;
         ++i;
     }
+    decodedMsg[i] = '\0';
     return decodedMsg;
 }
 

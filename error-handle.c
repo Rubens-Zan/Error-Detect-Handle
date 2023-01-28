@@ -140,7 +140,7 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
         updatePathError(pathRoot,height(pathRoot),&auxList,height(pathRoot),receivedStepMessage,packetSize); 
         
         cutLeafs(auxList,listSize(auxList)); // cutting leafs which collides in state and path error is bigger
-        printLevelOrder(pathRoot);
+        // printLevelOrder(pathRoot);
         deleteList(&auxList);
     }
   
@@ -161,6 +161,5 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
     #ifndef DEBUG 
     // prnList(head);
     #endif
-
     return decodedMessage; 
 }

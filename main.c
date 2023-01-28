@@ -8,13 +8,13 @@
 
 
 
-#define MSG_SIZE 15
+#define MSG_SIZE 10
 #define PKT_SIZE 2
 
 
 void main(void)
 {
-  bit message[] = "110111101111011"; 
+  bit message[] = "1101111010"; 
   unsigned int check;            // 16-bit checksum value
   unsigned int i;                // Loop counter
 
