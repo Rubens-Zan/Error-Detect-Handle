@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "list.h"
 
 void copyPathAggregatedMessage(bit *prevPathMess, bit *levelMessage, bit *pathAggMess, unsigned int level, unsigned int packetSize){
     for (int i=0;i < (packetSize * level-1);++i){
@@ -72,8 +73,10 @@ void getNextLeafOnLevel(tNode* root, int level,unsigned int packetSize, unsigned
     if (root == NULL)
         return;
     if (level == 0){
-        root->left =  startNode(root->pathError, 0, root->curState, height,packetSize, root); 
-        root->right = startNode(root->pathError, 1, root->curState, height,packetSize, root); 
+        if (root->shouldContinue){
+            root->left =  startNode(root->pathError, 0, root->curState, height,packetSize, root); 
+            root->right = startNode(root->pathError, 1, root->curState, height,packetSize, root); 
+        }
     }
     else if (level > 0) {
         getNextLeafOnLevel(root->left, level - 1,packetSize,height);
@@ -107,6 +110,18 @@ void printCurrentLevel(tNode* root, int level)
     if (root == NULL)
         return;
     if (level == 0 ){
+        if (root->parent != NULL){
+            if (root->parent->curState == A)
+                printf("A->"); 
+            if (root->parent->curState == B)
+                printf("B->"); 
+            if (root->parent->curState == C)
+                printf("C->"); 
+            if (root->parent->curState == D)
+                printf("D->");
+
+        }
+
         if (root->curState == A)
             printf("A"); 
         if (root->curState == B)
@@ -124,6 +139,7 @@ void printCurrentLevel(tNode* root, int level)
     }
 }
 /****/
+
 
 
 

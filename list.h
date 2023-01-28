@@ -11,7 +11,9 @@ struct tListNode
     tListNode *next; 
 };
 void insertfirst(tNode *element, tListNode **head);
+unsigned int listSize(tListNode *head);
 void prnList(tListNode *head);
 bit * getDecodedMessage(tListNode *head, unsigned int decodedMsgSize);
+void deleteList(tListNode** head_ref);
 
 #endif

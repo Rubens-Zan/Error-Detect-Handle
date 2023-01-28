@@ -9,7 +9,6 @@
 #define HANNINGDISTANCE(receivedBit,testedBit,packageSize) (return strncmp(receivedBit,testedBit, packageSize))
 
 
-
 bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned int msgSize);
 void getNextState(typesState curState,unsigned int receivedBit,tNode *nextNode); 
 

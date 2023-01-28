@@ -81,14 +81,21 @@ unsigned int calcHanningDistance(bit *receivedPacketMessage, bit *correctedPacke
 
 /** VITERBI ALGORITHM **/
 
-void updatePathError(tNode *node, bit *receivedStepMessage, unsigned int packetSize){
-     
-    if (node->left != NULL && node->right != NULL)
-    {   
-        updatePathError(node->left,receivedStepMessage,packetSize); 
-        updatePathError(node->right,receivedStepMessage,packetSize);
-    }else {
-        node->pathError += calcHanningDistance(receivedStepMessage,node->correctedBits, packetSize);
+void updatePathError(tNode *root, unsigned int level, tListNode **auxList, unsigned int height, bit *receivedStepMessage, unsigned int packetSize){
+    if (root == NULL)
+        return;
+    if (level == 0)
+    {
+        insertfirst(root, auxList);
+        root->pathError += calcHanningDistance(receivedStepMessage,root->correctedBits, packetSize);
+    }
+    else if (level > 0)
+    {
+        if (root->shouldContinue)
+        {
+            updatePathError(root->left, level - 1, auxList, height,receivedStepMessage,packetSize);
+            updatePathError(root->right, level - 1, auxList, height,receivedStepMessage,packetSize);
+        }
     }
 
 }
@@ -99,6 +106,23 @@ tNode * getMinHanningDistancePathLeaf(tNode *root, unsigned int packetSize){
     return minHanningDistancePathNode; 
 } 
 
+void cutLeafs(tListNode *head, unsigned int tam){
+    tListNode *aux = head;
+    for (int i=0;i < tam;++i){
+        tListNode *tmp = aux->next;
+        for (int k=i;k < tam-1;++k){
+            if (k != i && tmp->value->curState == aux->value->curState && aux->value->pathError < tmp->value->pathError ){
+                // printf("podando "); 
+                tmp->value->shouldContinue=false; 
+            }    
+            tmp = tmp->next;
+        }
+        // printf("aux %d %d  ", aux->value->curState,aux->value->parent->curState);  
+        aux = aux->next;
+    }
+
+}
+
 bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned int msgSize){
     tNode *pathRoot = startNode(0, 0, A, 0, packetSize, NULL);
     tNode *minHanningDistancePathAux;
@@ -106,15 +130,23 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
     pathRoot->correctedBits[1] = '0';
     unsigned int curPacket = 0;
 
-    unsigned int totalPackages = strlen(receivedMessage) / packetSize; 
+    unsigned int totalPackages = msgSize / packetSize; 
+    tListNode *auxList = NULL;
+
     for(unsigned int i = 0; i < totalPackages;++i){
         char receivedStepMessage[packetSize+1];
         strncpy(receivedStepMessage, &receivedMessage[i * packetSize], packetSize);
         getNextStep(pathRoot, packetSize); 
-        updatePathError(pathRoot, receivedStepMessage, packetSize); 
+        updatePathError(pathRoot,height(pathRoot),&auxList,height(pathRoot),receivedStepMessage,packetSize); 
+        
+        cutLeafs(auxList,listSize(auxList)); // cutting leafs which collides in state and path error is bigger
+        printLevelOrder(pathRoot);
+        deleteList(&auxList);
     }
-    printLevelOrder(pathRoot);
-
+  
+    #ifndef DEBUG
+    // printLevelOrder(pathRoot);
+    #endif
     minHanningDistancePathAux = getMinHanningDistancePathLeaf(pathRoot, packetSize); 
     tListNode *head = NULL;
     
@@ -122,9 +154,13 @@ bit * viterbiAlgorithm(bit *receivedMessage, unsigned int packetSize, unsigned i
         insertfirst(minHanningDistancePathAux,&head);
         minHanningDistancePathAux = minHanningDistancePathAux->parent; 
     } 
+    // prnList(head); 
+    printf("\n\n");
 
     bit *decodedMessage = getDecodedMessage(head,msgSize);
-    prnList(head);
+    #ifndef DEBUG 
+    // prnList(head);
+    #endif
 
     return decodedMessage; 
 }
