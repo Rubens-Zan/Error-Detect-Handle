@@ -2,28 +2,31 @@
 # Para efetuar a compilação digite make all
 # Para remover os arquivos temporários digite make clean
 # Para remover os arquivos temporários e o arquivo executável digite make purge
-
+CC     = gcc -g
 CFLAGS = -g
 
-MODULOS = binary-tree \
-	error-handle \
-	list \
-	generate-message 
-
-OBJETOS = teste.o $(addsuffix .o,$(MODULOS)) 
-
+PROG = teste
+OBJS = binary-tree.o \
+	error-handle.o \
+	list.o \
+	generate-message.o
 
 
-.PHONY : all clean debug
+.PHONY:  clean purge all debug
 
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) $<
 
-debug : CFLAGS += -DDEBUG
-debug : teste
+$(PROG):  $(OBJS) $(PROG).o
+	$(CC) $(CFLAGS) -o $@ $^
 
-all : teste
-teste : $(OBJETOS)
-clean : 
-	$(RM) $(OBJETOS)
+debug: CFLAGS += -DDEBUG
+debug: $(PROG)
 
-purge: 
-	$(RM) $(OBJETOS) teste
+clean:
+	@rm -f *~ *.bak
+
+purge:  clean
+	@rm -f *.o core a.out
+	@rm -f $(PROG)
+

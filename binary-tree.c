@@ -6,6 +6,15 @@
 #include <string.h>
 #include "list.h"
 
+void free_binary_tree(tNode *root) {
+  if (root == NULL) return;
+  free_binary_tree(root->left);
+  free_binary_tree(root->right);
+  free(root->correctedBits);
+  free(root);
+}
+
+
 void copyPathAggregatedMessage(bit *prevPathMess, bit *levelMessage, bit *pathAggMess, unsigned int level, unsigned int packetSize){
     for (int i=0;i < (packetSize * level-1);++i){
         pathAggMess[i] = prevPathMess[i];

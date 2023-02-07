@@ -36,7 +36,7 @@ bit * trellisEncode(bit *originalMessage, unsigned int size){
         encodCounter+=2; 
     }
     encodedMessage[encodCounter] = '\0';
-
+    
     return encodedMessage; 
 }
 

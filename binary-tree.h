@@ -16,6 +16,7 @@ struct tNode
     unsigned int pathError;
 };
 
+void free_binary_tree(tNode *root); 
 unsigned int countNodes(tNode *n);
 tNode *startNode(unsigned int curPathError,unsigned int inputBit, typesState curState, unsigned int level, unsigned int packetSize, tNode *parentNode);
 unsigned int height(tNode *p); 
