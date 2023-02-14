@@ -10,7 +10,6 @@ void free_binary_tree(tNode *root) {
   if (root == NULL) return;
   free_binary_tree(root->left);
   free_binary_tree(root->right);
-  free(root->correctedBits);
   free(root);
 }
 
